@@ -1,18 +1,10 @@
 import { useEffect, useState } from "react"
 
-import { Layout, Card, Statistic, List, Typography, Spin } from "antd"
+import {Layout, Card, Statistic, List, Typography, Spin, Tag} from "antd"
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons'
 
 import {fetchCoinData, fetchCoinAssets} from "../../services/fetchCoinData.js";
 import {percentDifference} from "../../utils/percentDifference.js";
-
-const data = [
-  'Racing car sprays burning fuel into crowd.',
-  'Japanese princess to wed commoner.',
-  'Australian walks 100km after outback crash.',
-  'Man charged over missing wedding girl.',
-  'Los Angeles battles huge wildfires.',
-]
 
 const siderStyle = {
   padding: '1rem'
@@ -37,7 +29,7 @@ const AppSideMenuBar = () => {
           growth: asset.price < coin.price,
           percentageGrowth: percentDifference(coin.price, asset.price),
           totalAmount: asset.amount * coin.price,
-          profitAmount: asset.amount * coin.price - asset.amount * asset.price,
+          totalProfit: asset.amount * coin.price - asset.amount * asset.price,
           ...asset
         }
       }))
@@ -64,15 +56,29 @@ const AppSideMenuBar = () => {
             precision={2}
             valueStyle={{color: asset.growth ? '#3f8600' : '#cf1322'}}
             prefix={asset.growth ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-            suffix="%"
+            suffix="$"
           />
           <List
             size="small"
-            bordered
-            dataSource={data}
+            dataSource={[
+              { title: 'Total Profit', value: asset.totalProfit, withTag: true },
+              { title: 'Asset Amount', value: asset.amount, isPlain: true },
+              { title: 'Difference', value: asset.percentageGrowth },
+            ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text mark>[ITEM]</Typography.Text> {item}
+                <span>{item.title}</span>
+                {item.withTag && (
+                  <Tag color={asset.growth ? 'green' : 'red'}>
+                    {asset.percentageGrowth}%
+                  </Tag>
+                )}
+                <span>
+                  {item.isPlain && item.value.toFixed(2)}
+                  {!item.isPlain && <Typography.Text type={asset.growth ? 'success' : 'danger'}>
+                    {item.value.toFixed(2)}$
+                  </Typography.Text>}
+                </span>
               </List.Item>
             )}
           />

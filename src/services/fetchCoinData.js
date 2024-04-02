@@ -1,4 +1,5 @@
 import axios from "axios"
+import {cryptoAssets} from "../mockData.js";
 export const fetchCoinData = async () => {
   const API_KEY = import.meta.env.VITE_COINGECKO_API
 
@@ -19,4 +20,13 @@ export const fetchCoinData = async () => {
   } catch (error) {
     console.error(error)
   }
+}
+
+
+export const fetchCoinAssets = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(cryptoAssets)
+    }, 2000)
+  })
 }

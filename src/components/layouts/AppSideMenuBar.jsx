@@ -3,7 +3,8 @@ import { useEffect, useState } from "react"
 import { Layout, Card, Statistic, List, Typography, Spin } from "antd"
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons'
 
-import {fetchCoinData} from "../../services/fetchCoinData.js";
+import {fetchCoinData, fetchCoinAssets} from "../../services/fetchCoinData.js";
+import {percentDifference} from "../../utils/percentDifference.js";
 
 const data = [
   'Racing car sprays burning fuel into crowd.',
@@ -26,14 +27,27 @@ const AppSideMenuBar = () => {
   useEffect(() => {
     const getCoinsPrice = async () => {
       setLoading(true)
-      const tokenData = await fetchCoinData()
+      const { result } = await fetchCoinData()
+      const assets = await fetchCoinAssets()
 
-      setTokens(tokenData)
+
+      setAssets(assets.map((asset) => {
+        const coin = result.find((c => c.id === asset.id))
+        return {
+          growth: asset.price < coin.price,
+          percentageGrowth: percentDifference(coin.price, asset.price),
+          totalAmount: asset.amount * coin.price,
+          profitAmount: asset.amount * coin.price - asset.amount * asset.price,
+          ...asset
+        }
+      }))
+
+      setTokens(result)
 
       setLoading(false)
     }
 
-    getCoinsPrice()
+    getCoinsPrice().then()
   }, []);
 
   if(loading) {
@@ -42,41 +56,29 @@ const AppSideMenuBar = () => {
 
   return (
     <Layout.Sider width="25%" style={siderStyle}>
-      <Card style={{marginBottom: '1rem'}}>
-        <Statistic
-          title="Active"
-          value={11.28}
-          precision={2}
-          valueStyle={{
-            color: '#3f8600',
-          }}
-          prefix={<ArrowUpOutlined />}
-          suffix="%"
-        />
-        <List
-          size="small"
-          bordered
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item>
-              <Typography.Text mark>[ITEM]</Typography.Text> {item}
-            </List.Item>
-          )}
-        />
-      </Card>
-
-      <Card>
-        <Statistic
-          title="Idle"
-          value={9.3}
-          precision={2}
-          valueStyle={{
-            color: '#cf1322',
-          }}
-          prefix={<ArrowDownOutlined />}
-          suffix="%"
-        />
-      </Card>
+      {assets.map(asset => (
+        <Card key={asset.id} style={{marginBottom: '1rem'}}>
+          <Statistic
+            title={asset.id}
+            value={asset.totalAmount}
+            precision={2}
+            valueStyle={{color: asset.growth ? '#3f8600' : '#cf1322'}}
+            prefix={asset.growth ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+            suffix="%"
+          />
+          <List
+            size="small"
+            bordered
+            dataSource={data}
+            renderItem={(item) => (
+              <List.Item>
+                <Typography.Text mark>[ITEM]</Typography.Text> {item}
+              </List.Item>
+            )}
+          />
+        </Card>
+      ))
+      }
     </Layout.Sider>
   )
 }

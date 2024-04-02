@@ -20,7 +20,7 @@ export const cryptoAssets = [
   {
     id: 'near',
     amount: 456,
-    price: 1.23,
+    price: 50,
     date: new Date(),
   },
 ]

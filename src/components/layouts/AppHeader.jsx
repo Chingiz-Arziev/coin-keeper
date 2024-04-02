@@ -1,9 +1,10 @@
-import { Layout, Select, Space, Button, Modal } from "antd"
+import { Layout, Select, Space, Button, Modal, Drawer } from "antd"
 
 import {useState, useContext} from "react"
 import {CryptoContext} from "../../context/crypto-context.jsx"
 
-import ModalTokenInfo from "../ModalTokenInfo.jsx";
+import ModalTokenInfo from "../ModalTokenInfo.jsx"
+import AssetsForm from "../AssetsForm.jsx";
 
 const headerStyle = {
   height: 60,
@@ -15,6 +16,7 @@ const headerStyle = {
 
 const AppHeader = () => {
   const [modal, setModal] = useState(false)
+  const [drawer, setDrawer] = useState(false)
   const [selectedToken, setSelectedToken] = useState(null)
 
   const { tokens} = useContext(CryptoContext)
@@ -47,7 +49,12 @@ const AppHeader = () => {
           </Space>
         )}
       />
-      <Button type="primary">Add Asset</Button>
+
+      <Button
+        type="primary"
+        onClick={() => setDrawer(true)}
+      >Add Asset
+      </Button>
 
       <Modal
         open={modal}
@@ -56,6 +63,14 @@ const AppHeader = () => {
       >
         <ModalTokenInfo selectedToken={selectedToken}/>
       </Modal>
+
+      <Drawer
+        width="600"
+        onClose={() => setDrawer(false)}
+        open={drawer}
+      >
+        <AssetsForm />
+      </Drawer>
     </Layout.Header>
   )
 }

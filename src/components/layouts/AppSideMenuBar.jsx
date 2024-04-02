@@ -5,11 +5,7 @@ import {Layout, Card, Statistic, List, Typography, Spin, Tag} from "antd"
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons'
 
 const AppSideMenuBar = () => {
-  const { loading, assets } = useContext(CryptoContext)
-
-  if(loading) {
-    return <Spin fullscreen />
-  }
+  const { assets } = useContext(CryptoContext)
 
   return (
     <Layout.Sider width="25%">

@@ -1,7 +1,7 @@
-const ModalTokenInfo = ({tokenName}) => {
+const ModalTokenInfo = ({selectedToken}) => {
   return (
     <h2>
-      {tokenName.name}
+      {selectedToken.name}
     </h2>
   );
 };

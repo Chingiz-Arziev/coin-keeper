@@ -15,7 +15,7 @@ const headerStyle = {
 
 const AppHeader = () => {
   const [modal, setModal] = useState(false)
-  const [tokenName, setTokenName] = useState(null)
+  const [selectedToken, setSelectedToken] = useState(null)
 
   const { tokens} = useContext(CryptoContext)
 
@@ -26,7 +26,7 @@ const AppHeader = () => {
   }))
 
   const handleSelect = (value) => {
-    setTokenName(tokens.find(token => token.id === value))
+    setSelectedToken(tokens.find(token => token.id === value))
     setModal(true)
   }
 
@@ -54,7 +54,7 @@ const AppHeader = () => {
         onCancel={() => setModal(false)}
         footer={null}
       >
-        <ModalTokenInfo tokenName={tokenName}/>
+        <ModalTokenInfo selectedToken={selectedToken}/>
       </Modal>
     </Layout.Header>
   )

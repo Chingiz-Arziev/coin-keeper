@@ -10,8 +10,8 @@ const App = () => {
       <Layout>
         <AppHeader />
         <Layout>
-          <AppContent />
           <AppSideMenuBar />
+          <AppContent />
         </Layout>
       </Layout>
     </>
